@@ -1,0 +1,204 @@
+from WarDeck import *
+import time
+# ==============================
+deck = Deck(6)
+for i in range(10):
+    deck.shuffle()
+    i += 1
+# ==============================
+print("Welcome to the War table. Good luck...")
+time.sleep(.5)
+# ==============================
+cash_remaining = True
+alive = True
+empty = []
+cash = 1000
+bet = 0
+play_again = True
+loan_shark = False
+loan_shark_debt_rounds = 0
+# ==============================
+
+
+def new_deck():
+    deck = Deck(6)
+    for i in range(7):
+        deck.shuffle()
+        i += 1
+
+
+def play_again_function():
+    global play_again
+    play_again = input("do you want to play again?").lower()
+    if play_again == "y" or "yes":
+        main()
+    else:
+        print("See you soon...")
+
+
+def bet_function():
+    global bet
+    global cash
+    print("You have {} cash".format(cash))
+    bet = int(input("How much do you want to bet"))
+    if bet > cash:
+        print("You don't have that much try again")
+        time.sleep(.25)
+        bet = 0
+        bet_function()
+
+    if bet < 0:
+        print("why?")
+        time.sleep(.25)
+        bet = 0
+        bet_function()
+
+
+def cash_limit():
+    global cash
+    global cash_remaining
+    if cash <= 0:
+        print("get out of my casino scrub!")
+        time.sleep(.25)
+        cash_remaining = False
+
+
+def surrender():
+    global cash
+    global bet
+    bet /= 2
+    cash -= bet
+
+
+def double_down_phase1():
+    global bet
+    bet *= 2
+    for i in range(4):
+        empty.append(deck.deal_card())
+        i += 1
+    double_down_phase2()
+
+
+def double_down_phase2():
+    global cash
+    players_card = deck.deal_card()
+    dealers_card = deck.deal_card()
+    if players_card.gameValue > dealers_card.gameValue:
+        print("your card {} won over".format(players_card.textValue, dealers_card.textValue))
+        time.sleep(.25)
+        cash += bet
+    elif players_card.gameValue < dealers_card.gameValue:
+        print("their card {} won over {}".format(dealers_card.textValue, players_card.textValue))
+        time.sleep(.25)
+        cash -= bet
+    elif players_card.gameValue == dealers_card.gameValue:
+        surrender_or_double_down = input(
+            "Do you want to surrender(lose half your bet) or double down(double your bet)").lower()
+        if surrender_or_double_down == "surrender":
+            surrender()
+        else:
+            double_down_phase1()
+    initial_phase()
+
+
+def loan_shark_phase1():
+    global cash
+    global loan_shark
+    if not loan_shark:
+        print("A sketchy man walks up to you")
+        print("\" I see you're running low on money")
+        print("Would you like some more\" he grins revealing a lack of teeth.")
+        loan = input("do you want a loan?").lower()
+        if loan == "yes" or "y":
+            cash += 1000
+            print("You have 5 hands to pay the man back")
+            loan_shark = True
+        elif loan == "no" or "n":
+            cash_limit()
+
+
+def loan_shark_phase2():
+    global cash
+    global alive
+    global loan_shark
+    if cash < 2000:
+        print("\"So you don't have my money?")
+        time.sleep(.5)
+        print("Guess its game over\"")
+        time.sleep(.5)
+        print("he snaps his fingers and suddenly you are bound and gagged")
+        time.sleep(.5)
+        print("*CLUNK*")
+        time.sleep(.5)
+        print("you are shoved into what you think is a car trunk.")
+        time.sleep(.5)
+        print("no one ever hears from you again")
+        alive = False
+    else:
+        time.sleep(.5)
+        print("\" good you have my money\"")
+        time.sleep(.5)
+        print("he takes 2 grand from you")
+        time.sleep(.5)
+        cash -= 2000
+        loan_shark = False
+
+
+def loan_shark_count():
+    global loan_shark
+    global loan_shark_debt_rounds
+    if loan_shark:
+        loan_shark_debt_rounds += 1
+    if loan_shark_debt_rounds == 5:
+        loan_shark_phase2()
+
+
+def death():
+    global alive
+    if not alive:
+        print("this hand got dark")
+# the initial drawing of cards
+
+
+def initial_phase():
+    new_deck()
+    playing = True
+    while playing and cash_remaining and alive:
+        global cash
+        if cash < 1:
+            loan_shark_phase1()
+        bet_function()
+        players_card = deck.deal_card()
+        dealers_card = deck.deal_card()
+        a = dealers_card.textValue
+        print("this is your card" , players_card.textValue)
+        time.sleep(.25)
+        if players_card.gameValue > dealers_card.gameValue:
+            print("your card {} won over {}".format(players_card.textValue, dealers_card.textValue))
+            time.sleep(.25)
+            cash += bet
+        elif players_card.gameValue < dealers_card.gameValue:
+            print("their card {} won over {}".format(dealers_card.textValue,players_card.textValue))
+            time.sleep(.25)
+            cash -= bet
+        elif players_card.gameValue == dealers_card.gameValue:
+            print("You both tied at {}".format(players_card.textValue))
+            surrender_or_double_down = input("Do you want to surrender(lose half your bet) or double down(double your bet)").lower()
+            if surrender_or_double_down == "surrender":
+                surrender()
+            else:
+                double_down_phase1()
+        if len(deck.deck) < 1:
+            play_again_function()
+
+        if not cash_remaining:
+            loan_shark_phase1()
+        loan_shark_count()
+
+
+def main():
+    initial_phase()
+# =====================
+
+
+main()
