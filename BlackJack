@@ -2,82 +2,40 @@
 
 import random
 import time
-loanShark = False
-print("Welcome to the Casino's Black Jack Table")
-print("Enjoy your stay!")
-cash = 500
-play = "yes"
-loanSharkRounds = 5
-loanSharkInt = 0
+class BlackJack():
+    loanShark = False
+    print("Welcome to the Casino's Black Jack Table")
+    print("Enjoy your stay!")
+    cash = 500
+    play = "yes"
+    loanSharkRounds = 5
+    loanSharkInt = 0
 
-while cash > -500 and play == "yes":
-    while not loanShark and play == "yes":
+    while cash > -500 and play == "yes":
+        while not loanShark and play == "yes":
 
-        pcard1 = random.randrange(11) + 1
-        pcard2 = random.randrange(11) + 1
+            pcard1 = random.randrange(11) + 1
+            pcard2 = random.randrange(11) + 1
 
-        dcard1 = random.randrange(11) + 1
-        dcard2 = random.randrange(11) + 1
+            dcard1 = random.randrange(11) + 1
+            dcard2 = random.randrange(11) + 1
 
-        pcumulative = pcard1 + pcard2
-        dcumulative = dcard1 + dcard2
+            pcumulative = pcard1 + pcard2
+            dcumulative = dcard1 + dcard2
 
-        i = 0
-        while dcumulative < 17:
-          dcumulative += random.randrange(11) + 1
+            i = 0
+            while dcumulative < 17:
+              dcumulative += random.randrange(11) + 1
 
-        print("You have {} dollars".format(cash))
-        bet = int(input("How much do you bet?"))
-        print("Your cards are {} & {}".format(pcard1, pcard2))
-        print("Your score is {}".format(pcumulative))
+            print("You have {} dollars".format(cash))
+            bet = int(input("How much do you bet?"))
+            print("Your cards are {} & {}".format(pcard1, pcard2))
+            print("Your score is {}".format(pcumulative))
 
-        choice = True
-        while choice:
-            hitOrStay = input("Hit or Stay?").lower()
-            if loanSharkInt == 0: 
-                if hitOrStay == "hit":
-                    pcumulative += random.randrange(11) + 1
-                    print("Your new score is {}".format(pcumulative))
-                    
-                    if pcumulative == 21:
-                        choice = False
-                        
-                    if pcumulative > 21:
-                        print("BUST")
-                        cash -= bet
-                        print("You now have {} dollars".format(cash))
-                        if cash <= 0:
-                            loanShark = True
-                            hitOrStay = "stay"
-                            
-                if hitOrStay == "stay":
-                    if dcumulative > 21 and pcumulative < 21:
-                        print("The dealer bust, you win")
-                        cash *= 1.5
-                        choice = False
-                        
-                    elif dcumulative < pcumulative < 21:
-                        print("The dealer has {}, you won!".format(dcumulative))
-                        cash *= 1.5
-                        choice = False
-                        
-                    elif pcumulative < dcumulative < 21:
-                        print("The dealer has {}, you lost...".format(dcumulative))
-                        choice = False
-                        cash -= bet
-                        
-                        if cash <= 0:
-                            loanShark = True
-                            hitOrStay = "stay"
-                            
-                        else:
-                            hitOrStay = "hit"
-                            
-                    elif pcumulative > 21:
-                        play = input("Want to play again?")
-                        choice = False
-                else:
-                    loanSharkRounds -= 1
+            choice = True
+            while choice:
+                hitOrStay = input("Hit or Stay?").lower()
+                if loanSharkInt == 0:
                     if hitOrStay == "hit":
                         pcumulative += random.randrange(11) + 1
                         print("Your new score is {}".format(pcumulative))
@@ -90,7 +48,7 @@ while cash > -500 and play == "yes":
                             cash -= bet
                             print("You now have {} dollars".format(cash))
                             if cash <= 0:
-
+                                loanShark = True
                                 hitOrStay = "stay"
 
                     if hitOrStay == "stay":
@@ -110,7 +68,7 @@ while cash > -500 and play == "yes":
                             cash -= bet
 
                             if cash <= 0:
-
+                                loanShark = True
                                 hitOrStay = "stay"
 
                             else:
@@ -119,25 +77,68 @@ while cash > -500 and play == "yes":
                         elif pcumulative > 21:
                             play = input("Want to play again?")
                             choice = False
-                    if loanSharkRounds < 1:
-                        print("\"So you thought you could play me huh?\"")
-                        time.sleep(.5)
-                        
-                        print("The last thing you hear is the closing of a trunk as")
-                        
-    while loanShark:
-        print("A sketchy man approaches you")
-        moreCash = int(input("\" How much you want boy?\""))
-        loanSharkInt += 1
-        
-        if moreCash > 0:
-            cash += moreCash
-            loanShark = False
-            
-        else:
-            print("Then get out of my casino!")
-            break
+                    else:
+                        loanSharkRounds -= 1
+                        if hitOrStay == "hit":
+                            pcumulative += random.randrange(11) + 1
+                            print("Your new score is {}".format(pcumulative))
+
+                            if pcumulative == 21:
+                                choice = False
+
+                            if pcumulative > 21:
+                                print("BUST")
+                                cash -= bet
+                                print("You now have {} dollars".format(cash))
+                                if cash <= 0:
+
+                                    hitOrStay = "stay"
+
+                        if hitOrStay == "stay":
+                            if dcumulative > 21 and pcumulative < 21:
+                                print("The dealer bust, you win")
+                                cash *= 1.5
+                                choice = False
+
+                            elif dcumulative < pcumulative < 21:
+                                print("The dealer has {}, you won!".format(dcumulative))
+                                cash *= 1.5
+                                choice = False
+
+                            elif pcumulative < dcumulative < 21:
+                                print("The dealer has {}, you lost...".format(dcumulative))
+                                choice = False
+                                cash -= bet
+
+                                if cash <= 0:
+
+                                    hitOrStay = "stay"
+
+                                else:
+                                    hitOrStay = "hit"
+
+                            elif pcumulative > 21:
+                                play = input("Want to play again?")
+                                choice = False
+                        if loanSharkRounds < 1:
+                            print("\"So you thought you could play me huh?\"")
+                            time.sleep(.5)
+
+                            print("The last thing you hear is the closing of a trunk as")
+
+        while loanShark:
+            print("A sketchy man approaches you")
+            moreCash = int(input("\" How much you want boy?\""))
+            loanSharkInt += 1
+
+            if moreCash > 0:
+                cash += moreCash
+                loanShark = False
+
+            else:
+                print("Then get out of my casino!")
+                break
 
 
 
-print("Hope you enjoyed your trip to the casino!")
+    print("Hope you enjoyed your trip to the casino!")
