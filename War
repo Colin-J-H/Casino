@@ -1,8 +1,8 @@
-from WarDeck import *
+from Deck import *
 import time
 # ==============================
 deck = Deck(6)
-for i in range(10):
+for i in range(100):
     deck.shuffle()
     i += 1
 # ==============================
@@ -199,6 +199,5 @@ def initial_phase():
 def main():
     initial_phase()
 # =====================
-
-
-main()
+class War:
+    main()
